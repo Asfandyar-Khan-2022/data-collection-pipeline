@@ -55,9 +55,9 @@ class crawler:
 
 
 
-
-start_crawling = crawler()
-start_crawling.load_and_accept_cookies()
-start_crawling.device_grade()
-start_crawling.list_all_phones()
-print(start_crawling.phones_names_list)
+if __name__ == "__main__":
+    start_crawling = crawler()
+    start_crawling.load_and_accept_cookies()
+    start_crawling.device_grade()
+    start_crawling.list_all_phones()
+    print(start_crawling.phones_names_list)
