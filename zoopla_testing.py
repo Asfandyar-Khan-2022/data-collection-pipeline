@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+from prettytable import PrettyTable
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
@@ -97,7 +98,7 @@ for i in range(1): # The first 5 pages only
 list_of_info = []
 
 for link in big_list:
-    time.sleep(1)
+    time.sleep(0.1)
     driver.get(link)
     dict_properties = {'Price': [], 'Address': [], 'Bedrooms': [], 'Description': []}
     price = driver.find_element(by=By.XPATH, value='//p[@data-testid="price"]').text
@@ -113,4 +114,7 @@ for link in big_list:
     list_of_info.append(dict_properties)
 
 print(list_of_info)
+table = PrettyTable(field_named=["Price", "Address", "Bedrooms", "Description"])
+table.add_rows(list_of_info)
+print(table)
 driver.quit() # Close the browser when you finish
