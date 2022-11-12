@@ -36,14 +36,19 @@ class crawler:
         dict_phones = {'Phone': [], 'Condition': [], 'Price': []}
         phone_name = self.driver.find_elements(By.CSS_SELECTOR, 'span.ais-Highlight')
         we_sell_price = self.driver.find_elements(By.CSS_SELECTOR, 'div.priceTxt')
+        new_list = []
+        for i in we_sell_price:
+            new_list.append(i.text)
+        composite_list = [new_list[x:x+3] for x in range(0, len(new_list),3)]
+        print(composite_list[0])
         for i in phone_name:
             dict_phones = {'Phone': [], 'Condition': [], 'Price': []}
             dict_phones['Phone'].append(i.text)
             dict_phones['Condition'].append(i.text[-1])
             self.phones_names_list.append(dict_phones)
-        for i in we_sell_price:
-            dict_phones_price = {'Price': []}
-            dict_phones_price['Price'].append(i.text)
+        for i in composite_list:
+            dict_phones_price = {}
+            dict_phones_price['Price'] = i
             self.phones_price_list.append(dict_phones_price)
         for i in range (len(self.phones_names_list)):
             self.phones_names_list[i]['Price'] = self.phones_price_list[i]['Price']
