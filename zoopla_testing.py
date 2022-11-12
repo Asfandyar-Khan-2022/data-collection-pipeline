@@ -83,7 +83,7 @@ def get_links(driver: webdriver.Chrome) -> list:
 big_list = []
 driver = load_and_accept_cookies()
 
-for i in range(1): # The first 5 pages only
+for i in range(5): # The first 5 pages only
     time.sleep(3)
     try:
         cross_out = driver.find_element(By.XPATH , value= '/html/body/div[8]/div/div[1]/button')
@@ -98,7 +98,7 @@ for i in range(1): # The first 5 pages only
 list_of_info = []
 
 for link in big_list:
-    time.sleep(0.1)
+    time.sleep(1)
     driver.get(link)
     dict_properties = {'Price': [], 'Address': [], 'Bedrooms': [], 'Description': []}
     price = driver.find_element(by=By.XPATH, value='//p[@data-testid="price"]').text
@@ -114,7 +114,4 @@ for link in big_list:
     list_of_info.append(dict_properties)
 
 print(list_of_info)
-table = PrettyTable(field_named=["Price", "Address", "Bedrooms", "Description"])
-table.add_rows(list_of_info)
-print(table)
 driver.quit() # Close the browser when you finish
