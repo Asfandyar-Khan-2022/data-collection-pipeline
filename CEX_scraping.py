@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 from datetime import datetime
+import json
 
 class crawler:
 
@@ -79,3 +80,7 @@ if __name__ == "__main__":
     start_crawling.device_grade()
     start_crawling.list_all_phones()
     print(start_crawling.phones_names_list)
+    j = json.dumps(start_crawling.phones_names_list)
+    with open('CEX_scraping_info.json', 'w') as f:
+        f.write(j)
+        f.close()
