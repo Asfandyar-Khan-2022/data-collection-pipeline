@@ -1,14 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
-from datetime import datetime
+import datetime
 import json
 import requests 
 import shutil 
 
 
-
 class crawler:
+
 
     def __init__(self):
         options = webdriver.ChromeOptions()
@@ -19,9 +19,8 @@ class crawler:
         self.phones_price_list = []
         self.image_url_list = []
         self.complete_list = []
-
+   
     
-
     def load_and_accept_cookies(self) -> webdriver.Chrome:
         URL = f"https://uk.webuy.com/search?stext=iphone%207%20plus"
         self.driver.get(URL)
@@ -45,14 +44,16 @@ class crawler:
         self.driver.back()
         time.sleep(3)
         previouse_height = self.driver.execute_script('return document.body.scrollHeight')
+
         while True:
             self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
             time.sleep(3)
-
             new_height = self.driver.execute_script('return document.body.scrollHeight')
+
             if new_height == previouse_height:
                 break
             previouse_height = new_height
+
         return True
     
 
@@ -86,16 +87,19 @@ class crawler:
         for i in range (len(self.phones_names_list)):
             self.phones_names_list[i]['Price'] = self.phones_price_list[i]['Price']
             self.phones_names_list[i]['Image URL'] = self.image_url_list[i]['Image URL']
-            now = str(datetime.now())
+            now = str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
             self.phones_names_list[i]['Time'] = now
     
     def download_img(self):    
         for i in range(len(self.image_url_list)):
             image_url = self.image_url_list[i]['Image URL'][0]
-            filename = image_url.split("/")[-1]
+            now = str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+            filename = f"{now}_{str(i)}.jpg"
             r = requests.get(image_url, stream = True)
+
             if r.status_code == 200:
                 r.raw.decode_content = True
+
                 with open(filename,'wb') as f:
                     shutil.copyfileobj(r.raw, f)
                     
