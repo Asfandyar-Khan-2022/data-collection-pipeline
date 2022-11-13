@@ -3,6 +3,10 @@ from selenium.webdriver.common.by import By
 import time
 from datetime import datetime
 import json
+import requests 
+import shutil 
+
+
 
 class crawler:
 
@@ -15,6 +19,7 @@ class crawler:
         self.phones_price_list = []
         self.image_url_list = []
         self.complete_list = []
+
     
 
     def load_and_accept_cookies(self) -> webdriver.Chrome:
@@ -38,7 +43,18 @@ class crawler:
         in_and_out.click()
         time.sleep(3)
         self.driver.back()
+        time.sleep(3)
+        previouse_height = self.driver.execute_script('return document.body.scrollHeight')
+        while True:
+            self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+            time.sleep(3)
 
+            new_height = self.driver.execute_script('return document.body.scrollHeight')
+            if new_height == previouse_height:
+                break
+            previouse_height = new_height
+        return True
+    
 
     def list_all_phones(self):
         dict_phones = {'Phone': [], 'Condition': [], 'Price': []}
@@ -72,15 +88,25 @@ class crawler:
             self.phones_names_list[i]['Image URL'] = self.image_url_list[i]['Image URL']
             now = str(datetime.now())
             self.phones_names_list[i]['Time'] = now
+    
+    def download_img(self):    
+        for i in range(len(self.image_url_list)):
+            image_url = self.image_url_list[i]['Image URL'][0]
+            filename = image_url.split("/")[-1]
+            r = requests.get(image_url, stream = True)
+            if r.status_code == 200:
+                r.raw.decode_content = True
+                with open(filename,'wb') as f:
+                    shutil.copyfileobj(r.raw, f)
+                    
+                print('Image sucessfully Downloaded: ',filename)
+            else:
+                print('Image Couldn\'t be retreived')
 
 
 if __name__ == "__main__":
     start_crawling = crawler()
     start_crawling.load_and_accept_cookies()
-    start_crawling.device_grade()
-    start_crawling.list_all_phones()
-    print(start_crawling.phones_names_list)
-    j = json.dumps(start_crawling.phones_names_list)
-    with open('CEX_scraping_info.json', 'w') as f:
-        f.write(j)
-        f.close()
+    if start_crawling.device_grade():
+        start_crawling.list_all_phones()
+        start_crawling.download_img()

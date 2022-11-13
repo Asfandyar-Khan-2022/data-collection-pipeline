@@ -1,9 +1,7 @@
-test = [{'a':1, 'b':2}, {'c':3,'d':4}, {'e':5, 'f':6}]
-test2 = [{'g':7}, {'h':8}, {'i':9}]
-test3 =[]
+def test():
+    i = 0
+    while True:
+        i += 1
 
-for i in range(len(test)):
-    print(test[i].update(test2[i]))
-
-print(test)
-    
+if test():
+    print('something')
