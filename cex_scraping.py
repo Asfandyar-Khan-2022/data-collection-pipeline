@@ -5,10 +5,21 @@ import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import requests
+from selenium.webdriver.chrome.options import Options
 
+
+chrome_options = Options()
+#chrome_options.add_argument("--disable-extensions")
+#chrome_options.add_argument("--disable-gpu")
+#chrome_options.add_argument("--no-sandbox") # linux only
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--window-size=1920x1080")
+chrome_options.add_argument("start-maximised")
 
 options = webdriver.ChromeOptions()
-options.add_experimental_option("detach", True)
+options.add_experimental_option('detach', True)
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 
@@ -16,24 +27,24 @@ class Crawler:
     """
     This class is used to gather Iphone price data.
     """
-    phones_names_list = []
-    phones_price_list = []
-    image_url_list = []
 
 
     def __init__(self):
         """
         See help(Crawler) for accurate signature
         """
-        self.driver = webdriver.Chrome(options=options)
-        self.url = "https://uk.webuy.com/search/?stext=iphone%207%20plus"
+        self.driver = driver = webdriver.Chrome(options=chrome_options)
+        self.url = 'https://uk.webuy.com/search/?stext=iphone%207%20plus'
+        self.phones_names_list = []
+        self.phones_price_list = []
+        self.image_url_list = []
 
 
     def load_and_accept_cookies(self) -> webdriver.Chrome:
         """
         Accept the cookies prompt.
         """
-        self.url = "https://uk.webuy.com/search/?stext=iphone%207%20plus"
+        self.url = 'https://uk.webuy.com/search/?stext=iphone%207%20plus'
         self.driver.get(self.url)
         time.sleep(3)
         accept_cookies_button = self.driver.find_element(By.XPATH,
@@ -81,7 +92,7 @@ class Crawler:
         previouse_height = self.driver.execute_script('return document.body.scrollHeight')
 
         while True:
-            self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+            self.driver.execute_script('window.scrollTo(0,document.body.clientHeight)')
             time.sleep(3)
             new_height = self.driver.execute_script('return document.body.scrollHeight')
 
@@ -151,8 +162,8 @@ class Crawler:
         """
         for i, _ in enumerate(self.image_url_list):
             image_url = self.image_url_list[i]['Image url'][0]
-            now = str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
-            filename = f"{now}_{str(i)}.jpg"
+            now = str(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
+            filename = f'{now}_{str(i)}.jpg'
             connect_to_img_url = requests.get(image_url, stream = True, timeout=5)
 
             if connect_to_img_url.status_code == 200:
@@ -165,7 +176,7 @@ class Crawler:
             else:
                 print('Image Couldn\'t be retrieved')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     start_crawling = Crawler()
     start_crawling.load_and_accept_cookies()
     start_crawling.device_grade()
