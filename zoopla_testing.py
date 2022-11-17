@@ -89,7 +89,7 @@ for i in range(5): # The first 5 pages only
         cross_out = driver.find_element(By.XPATH , value= '/html/body/div[8]/div/div[1]/button')
         cross_out.click()
     except:
-        print('nothing to cross out of')
+        print('nothing to cross out')
     big_list.extend(get_links(driver)) # Call the function we just created and extend the big list with the returned list
     next_page = driver.find_element(By.XPATH, value='//*[@id="main-content"]/div/div[4]/div[2]/section/div[2]/div[3]/ul/li[7]/a')
     next_page.click()
