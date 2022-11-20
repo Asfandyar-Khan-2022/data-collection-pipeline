@@ -1,7 +1,15 @@
-def test():
-    i = 0
-    while True:
-        i += 1
+def my_decorator(func):
+    def wrapper(*args,**kwargs):
+        test = func(*args,**kwargs)
+        with open('out.txt', 'w') as f:
+            print(test, file=f)  # Python 3.
+        return test
 
-if test():
-    print('something')
+    return wrapper
+    
+
+@my_decorator
+def say_hello(name):
+    return f'Hello, {name}!'
+
+say_hello('Asfandyar')

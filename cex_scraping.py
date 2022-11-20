@@ -33,7 +33,7 @@ class Crawler:
         """
         See help(Crawler) for accurate signature
         """
-        self.driver = driver = webdriver.Chrome(options=chrome_options)
+        self.driver = webdriver.Chrome(options=chrome_options)
         self.url = 'https://uk.webuy.com/search/?stext=iphone%207%20plus'
         self.phones_names_list = []
         self.phones_price_list = []
