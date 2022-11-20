@@ -2,21 +2,18 @@
 import datetime
 import time
 import shutil
+import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import requests
 from selenium.webdriver.chrome.options import Options
 
-
 chrome_options = Options()
-#chrome_options.add_argument("--disable-extensions")
-#chrome_options.add_argument("--disable-gpu")
-#chrome_options.add_argument("--no-sandbox") # linux only
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_options.add_argument("start-maximised")
+
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--window-size=1920x1080')
+chrome_options.add_argument('start-maximised')
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option('detach', True)
@@ -24,15 +21,11 @@ options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 
 class Crawler:
-    """
-    This class is used to gather Iphone price data.
-    """
-
+    """This class is used to gather Iphone price data."""
 
     def __init__(self):
-        """
-        See help(Crawler) for accurate signature
-        """
+        """See help(Crawler) for accurate signature."""
+
         self.driver = webdriver.Chrome(options=chrome_options)
         self.url = 'https://uk.webuy.com/search/?stext=iphone%207%20plus'
         self.phones_names_list = []
@@ -41,9 +34,8 @@ class Crawler:
 
 
     def load_and_accept_cookies(self) -> webdriver.Chrome:
-        """
-        Accept the cookies prompt.
-        """
+        """Accept the cookies prompt."""
+
         self.url = 'https://uk.webuy.com/search/?stext=iphone%207%20plus'
         self.driver.get(self.url)
         time.sleep(3)
@@ -54,10 +46,8 @@ class Crawler:
 
 
     def device_grade(self):
-        """
-        Find the tick box responsible for grade a and click on it to only show grade a results.
-        Do the same for grade b.
-        """
+        """Locate and tick grades a and b."""
+
         grade_a = self.driver.find_element(By.XPATH,
         value='//*[@id="__layout"]/div/div[6]/div[2]/div[1]/div/div/div[47]/ul/li[3]')
         grade_a.click()
@@ -68,7 +58,8 @@ class Crawler:
 
 
     def go_into_page_and_out(self):
-        """
+        """Go in and out of a page.
+
         The option that allows access to the image class is only made available after going into
         a device link and coming back out.
         """
@@ -82,11 +73,12 @@ class Crawler:
 
 
     def scroll_to_bottom(self):
-        """
+        """Scroll to bottom of page.
+
         The page scrolls to the bottom so that all device names are made available.
         As otherwise not all the data can be collected.
 
-        Return:
+        Returns:
             Return true when the bottom of the page has been reached
         """
         previouse_height = self.driver.execute_script('return document.body.scrollHeight')
@@ -104,9 +96,10 @@ class Crawler:
 
 
     def gather_image_data(self):
-        """
-        Find all img tags and classes that correlate with the desired images.
-        Save the URL links in a list
+        """Save image URL in a list.
+
+        Find all img tags and classes that correlate with the desired images
+        and save all the image URL in a list.
         """
         image_data = self.driver.find_elements(By.CSS_SELECTOR, 'img.t058-product-img')
 
@@ -117,7 +110,8 @@ class Crawler:
 
 
     def buying_and_selling_price(self):
-        """
+        """Group selling and buying data.
+
         Group the selling and buying data for each device.
         As in its current state the data is all split in a list.
         """
@@ -134,9 +128,8 @@ class Crawler:
 
 
     def phone_name_and_condition(self):
-        """
-        Find all span tags and classes that correlate with the desired device names.
-        """
+        """Find all span tags and classes that correlate with the desired device names."""
+
         phone_name = self.driver.find_elements(By.CSS_SELECTOR, 'span.ais-Highlight')
         for i in phone_name:
             dict_phones = {'Phone': [], 'Condition': [], 'Price': [], 'Image url': [], 'Time': []}
@@ -146,9 +139,8 @@ class Crawler:
 
 
     def add_url_price_time_to_dictionary(self):
-        """
-        Add the price data and the current time to the dictionary.
-        """
+        """Add the price data and the current time to the dictionary."""
+
         for i, _ in enumerate(self.phones_names_list):
             self.phones_names_list[i]['Price'] = self.phones_price_list[i]['Price']
             self.phones_names_list[i]['Image url'] = self.image_url_list[i]['Image url']
@@ -157,9 +149,8 @@ class Crawler:
 
 
     def download_img(self):
-        """
-        Download all the images and store them locally in the current directory.
-        """
+        """Download all the images and store them locally in the current directory."""
+
         for i, _ in enumerate(self.image_url_list):
             image_url = self.image_url_list[i]['Image url'][0]
             now = str(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
