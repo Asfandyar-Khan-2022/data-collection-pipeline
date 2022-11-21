@@ -9,6 +9,7 @@ RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`cu
 RUN apt-get install -yqq unzip
 RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
+WORKDIR /app
 COPY . .
 
 RUN pip install -r requirements.txt

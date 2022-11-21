@@ -1,5 +1,6 @@
 """system_module."""
 import datetime
+import os
 import time
 import shutil
 import requests
@@ -150,11 +151,14 @@ class Crawler:
 
     def download_img(self):
         """Download all the images and store them locally in the current directory."""
+        if not os.path.exists('raw_data'):
+            os.mkdir('raw_data')
 
         for i, _ in enumerate(self.image_url_list):
+            time.sleep(5)
             image_url = self.image_url_list[i]['Image url'][0]
             now = str(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
-            filename = f'{now}_{str(i)}.jpg'
+            filename = f'raw_data//{now}_{str(i)}.jpg'
             connect_to_img_url = requests.get(image_url, stream = True, timeout=5)
 
             if connect_to_img_url.status_code == 200:
